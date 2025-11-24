@@ -1,4 +1,4 @@
 package com.example.projectcalculator.model;
 
-public class ProjectModel {
+public class SubProject {
 }
