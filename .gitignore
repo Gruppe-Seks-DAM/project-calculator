@@ -1,6 +1,10 @@
 # Maven build directory
 target/
 
+# .idea
+.idea/
+*.iml
+
 # Compiled class file
 *.class
 
