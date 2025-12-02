@@ -3,7 +3,8 @@ package com.example.projectcalculator.model;
 import java.time.LocalDate;
 
 public class Project {
-    private long id;
+
+    private Long id;
     private String name;
     private String description;
     private LocalDate deadline;
@@ -18,11 +19,11 @@ public class Project {
         this.deadline = deadline;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

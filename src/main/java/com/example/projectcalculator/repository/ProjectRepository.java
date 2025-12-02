@@ -2,39 +2,50 @@ package com.example.projectcalculator.repository;
 
 import com.example.projectcalculator.model.Project;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public class ProjectRepository {
-    private final JdbcTemplate jdbc;
 
-    public ProjectRepository(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
+    private final JdbcTemplate jdbcTemplate;
+
+    public ProjectRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public long create(Project project) {
-        String sql = "INSERT INTO project (name, description, deadline) VALUES (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+    /**
+     * Henter alle projekter fra project-tabellen.
+     */
+    public List<Project> findAllProjects() {
+        String sql = """
+                SELECT id, name, description, deadline
+                FROM project
+                ORDER BY id
+                """;
 
-        jdbc.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, project.getName());
-            ps.setString(2, project.getDescription());
+        return jdbcTemplate.query(sql, new ProjectRowMapper());
+    }
 
-            if (project.getDeadline() != null) {
-                ps.setDate(3, Date.valueOf(project.getDeadline()));
-            } else {
-                ps.setDate(3, null);
-            }
-            return ps;
-        }, keyHolder);
-        return  keyHolder.getKey().longValue();
-        // bruges til senere
+    /**
+     * Mapper én række fra project-tabellen til et Project-objekt.
+     */
+    private static class ProjectRowMapper implements RowMapper<Project> {
+        @Override
+        public Project mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Long id = rs.getLong("id");
+            String name = rs.getString("name");
+            String description = rs.getString("description");
+            LocalDate deadline = rs.getDate("deadline") != null
+                    ? rs.getDate("deadline").toLocalDate()
+                    : null;
+
+            return new Project(id, name, description, deadline);
+        }
     }
 }

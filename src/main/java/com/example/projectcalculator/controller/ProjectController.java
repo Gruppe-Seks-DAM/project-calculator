@@ -19,7 +19,13 @@ public class ProjectController {
     public ProjectController(ProjectService service) {
         this.service = service;
     }
-
+    
+    @GetMapping("/projects")
+    public String showProjects(Model model) {
+        List<Project> projects = projectService.getAllProjects();
+        model.addAttribute("projects", projects);
+        return "projects"; // thymeleaf template: src/main/resources/templates/projects.html
+  
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("projectDto", new ProjectDto());
