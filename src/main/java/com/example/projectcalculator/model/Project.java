@@ -9,6 +9,9 @@ public class Project {
     private String description;
     private LocalDate deadline;
 
+    public Project() {
+    }
+
     public Project(Long id, String name, String description, LocalDate deadline) {
         this.id = id;
         this.name = name;
