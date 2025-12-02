@@ -43,4 +43,16 @@ public class ProjectController {
         service.create(projectDto);
         return "redirect:/projects";
     }
+      @PostMapping("/{id}/delete")
+    public String deleteProject(@PathVariable long id) {
+
+        boolean deleted = service.delete(id);
+
+        if (!deleted) {
+            return "redirect:/projects?error=Could not delete project";
+        }
+
+        return "redirect:/projects?success=Project deleted successfully";
+    }
 }
+

@@ -48,4 +48,10 @@ public class ProjectRepository {
             return new Project(id, name, description, deadline);
         }
     }
+  public boolean delete(long id) {
+        String sql = "DELETE FROM project WHERE id = ?";
+        int rows = jdbcTemplate.update(sql, id);
+        return rows > 0;
+    }
 }
+

@@ -29,5 +29,9 @@ public class ProjectService {
         p.setDeadline(dto.getDeadline());
         return repo.create(p);
     }
+  
+  public boolean delete(long id) {
+        return projectRepository.delete(id);
+    }
 }
 
