@@ -1,58 +1,68 @@
 package com.example.projectcalculator.controller;
 
 import com.example.projectcalculator.dto.ProjectDto;
+import com.example.projectcalculator.model.Project;
 import com.example.projectcalculator.service.ProjectService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+// MERGES FØRST
+// Merge US3 efter (edit)
+// TODO implementer at kunne create project fra forsiden, ligenu kan man kun fra /projects/create
 
 @Controller
 @RequestMapping("/projects")
 public class ProjectController {
+
     private final ProjectService service;
 
     public ProjectController(ProjectService service) {
         this.service = service;
     }
-    
-    @GetMapping("/projects")
+
+    @GetMapping
     public String showProjects(Model model) {
-        List<Project> projects = projectService.getAllProjects();
+        List<Project> projects = service.getAllProjects();
         model.addAttribute("projects", projects);
         return "projects"; // thymeleaf template: src/main/resources/templates/projects.html
-  
+    }
+
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("projectDto", new ProjectDto());
-        System.out.println("DEBUG: /projects/create handler hit");
         return "createProjectForm";
     }
 
     @PostMapping
-    public String createProject(@Valid @ModelAttribute("projectDto")
-                                    ProjectDto projectDto,
-                                    BindingResult br) {
+    public String createProject(
+            @Valid @ModelAttribute("projectDto")
+            ProjectDto projectDto,
+            BindingResult br) {
 
         if (br.hasErrors()) return "createProjectForm";
 
         service.create(projectDto);
         return "redirect:/projects";
     }
-      @PostMapping("/{id}/delete")
-    public String deleteProject(@PathVariable long id) {
 
+    @PostMapping("/{id}/delete")
+    public String deleteProject(@PathVariable long id) {
         boolean deleted = service.delete(id);
 
         if (!deleted) {
             return "redirect:/projects?error=Could not delete project";
         }
-
         return "redirect:/projects?success=Project deleted successfully";
     }
-}
 
+    @GetMapping("/debug/list")
+    @ResponseBody
+    public List<Project> debugList() {
+        return service.getAllProjects(); // eller repo.findAllProjects via service
+    }
+}

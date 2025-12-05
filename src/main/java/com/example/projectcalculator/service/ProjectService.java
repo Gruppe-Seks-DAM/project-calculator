@@ -3,35 +3,34 @@ package com.example.projectcalculator.service;
 import com.example.projectcalculator.dto.ProjectDto;
 import com.example.projectcalculator.model.Project;
 import com.example.projectcalculator.repository.ProjectRepository;
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class ProjectService {
+    private final ProjectRepository repository;
 
-    private final ProjectRepository projectRepository;
-
-    public ProjectService(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public ProjectService(ProjectRepository repository) {
+        this.repository = repository;
     }
 
     /**
      * Service-metoden som controlleren kalder.
      */
     public List<Project> getAllProjects() {
-        return projectRepository.findAllProjects();
+        return repository.findAllProjects();
     }
 
-    public long create(ProjectDto dto) {
+    public boolean create(ProjectDto dto) {
         Project p = new Project();
         p.setName(dto.getName());
         p.setDescription(dto.getDescription());
         p.setDeadline(dto.getDeadline());
-        return repo.create(p);
+        return repository.create(p);
     }
-  
+
   public boolean delete(long id) {
-        return projectRepository.delete(id);
+        return repository.delete(id);
     }
 }
 
