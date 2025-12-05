@@ -1,6 +1,5 @@
 package com.example.projectcalculator.service;
 
-// ProjectService.java
 import com.example.projectcalculator.model.Project;
 import com.example.projectcalculator.repository.ProjectRepository;
 import org.springframework.stereotype.Service;

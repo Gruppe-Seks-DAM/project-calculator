@@ -1,6 +1,5 @@
 package com.example.projectcalculator.repository;
 
-// ProjectRepository.java
 import com.example.projectcalculator.model.Project;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

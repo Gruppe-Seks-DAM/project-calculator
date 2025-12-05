@@ -1,6 +1,5 @@
 package com.example.projectcalculator.controller;
 
-// ProjectController.java
 import com.example.projectcalculator.model.Project;
 import com.example.projectcalculator.service.ProjectService;
 import jakarta.validation.Valid;
