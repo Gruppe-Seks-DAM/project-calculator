@@ -1,10 +1,11 @@
 package com.example.projectcalculator.service;
 
-import com.example.projectcalculator.dto.ProjectDto;
+// ProjectService.java
 import com.example.projectcalculator.model.Project;
 import com.example.projectcalculator.repository.ProjectRepository;
-import org.springframework.stereotype.Service
-import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.Optional;
 
 @Service
 public class ProjectService {
@@ -15,23 +16,16 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
-    /**
-     * Service-metoden som controlleren kalder.
-     */
-    public List<Project> getAllProjects() {
-        return projectRepository.findAllProjects();
+    public Optional<Project> findById(Long id) {
+        return projectRepository.findById(id);
     }
 
-    public long create(ProjectDto dto) {
-        Project p = new Project();
-        p.setName(dto.getName());
-        p.setDescription(dto.getDescription());
-        p.setDeadline(dto.getDeadline());
-        return repo.create(p);
-    }
-  
-  public boolean delete(long id) {
-        return projectRepository.delete(id);
+    @Transactional
+    public boolean updateProject(Project project) {
+        // Check if project exists
+        if (project.getId() == null || !projectRepository.findById(project.getId()).isPresent()) {
+            return false;
+        }
+        return projectRepository.update(project);
     }
 }
-
