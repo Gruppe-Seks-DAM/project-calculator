@@ -8,7 +8,7 @@ public class SubProject {
     private Long id;
     private String name;
     private String description;
-    private LocalDate deadline;
+    private LocalDate deadline
     private List<Task> tasks;
 
     public SubProject() {
