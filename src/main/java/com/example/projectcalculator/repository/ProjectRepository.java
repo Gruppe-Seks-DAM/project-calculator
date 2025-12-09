@@ -19,22 +19,32 @@ public class ProjectRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    /**
-     * Henter alle projekter fra project-tabellen.
-     */
     public List<Project> findAllProjects() {
         String sql = """
                 SELECT id, name, description, deadline
                 FROM project
                 ORDER BY id
                 """;
-
         return jdbcTemplate.query(sql, new ProjectRowMapper());
     }
 
-    /**
-     * Mapper én række fra project-tabellen til et Project-objekt.
-     */
+    public boolean createProject(Project project) {
+        String sql = "INSERT INTO project (name, description, deadline) VALUES (?, ?, ?)";
+        int rows = jdbcTemplate.update(
+                sql,
+                project.getName(),
+                project.getDescription(),
+                project.getDeadline()
+        );
+        return rows > 0;
+    }
+
+    public boolean deleteProject(long id) {
+        String sql = "DELETE FROM project WHERE id = ?";
+        int rows = jdbcTemplate.update(sql, id);
+        return rows > 0;
+    }
+
     private static class ProjectRowMapper implements RowMapper<Project> {
         @Override
         public Project mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -44,14 +54,7 @@ public class ProjectRepository {
             LocalDate deadline = rs.getDate("deadline") != null
                     ? rs.getDate("deadline").toLocalDate()
                     : null;
-
             return new Project(id, name, description, deadline);
         }
     }
-  public boolean delete(long id) {
-        String sql = "DELETE FROM project WHERE id = ?";
-        int rows = jdbcTemplate.update(sql, id);
-        return rows > 0;
-    }
 }
-
