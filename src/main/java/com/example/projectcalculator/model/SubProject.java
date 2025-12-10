@@ -9,7 +9,6 @@ public class SubProject {
     private String name;
     private String description;
     private LocalDate deadline;
-    private List<Task> tasks;
 
     public SubProject() {
     }
@@ -19,7 +18,6 @@ public class SubProject {
         this.name = name;
         this.description = description;
         this.deadline = deadline;
-        this.tasks = tasks;
     }
 
     public Long getId() {
@@ -52,13 +50,5 @@ public class SubProject {
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
-    }
-
-    public List<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
     }
 }
