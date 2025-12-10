@@ -5,6 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -24,6 +32,47 @@ public class TaskRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public Optional<Task> findById(Long id) {
+        String sql = """
+                SELECT id, subproject_id, name, description, deadline
+                FROM task
+                WHERE id = ?
+                """;
+
+        List<Task> list = jdbcTemplate.query(sql, new TaskRowMapper(), id);
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
+    }
+
+    public boolean update(Task task) {
+        String sql = """
+                UPDATE task
+                SET name = ?, description = ?, deadline = ?
+                WHERE id = ?
+                """;
+
+        int rows = jdbcTemplate.update(
+                sql,
+                task.getName(),
+                task.getDescription(),
+                task.getDeadline() != null ? Date.valueOf(task.getDeadline()) : null,
+                task.getId()
+        );
+
+        return rows > 0;
+    }
+
+    // Mapper én række fra task-tabellen til et Task-objekt
+    private static class TaskRowMapper implements RowMapper<Task> {
+        @Override
+        public Task mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Long id = rs.getLong("id");
+            Long subProjectId = rs.getLong("subproject_id");
+            String name = rs.getString("name");
+            String description = rs.getString("description");
+            Date date = rs.getDate("deadline");
+            LocalDate deadline = date != null ? date.toLocalDate() : null;
+
+            return new Task(id, subProjectId, name, description, deadline);
     private final RowMapper<Task> taskRowMapper = new RowMapper<Task>() {
         @Override
         public Task mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -38,11 +87,13 @@ public class TaskRepository {
                 task.setDeadline(deadline.toLocalDate());
             }
 
-            // Check if estimated_hours column exists
+            // Note: estimated_hours column might not exist in TASK table
+            // We'll check if the column exists
             try {
                 task.setEstimatedHours(rs.getDouble("estimated_hours"));
             } catch (SQLException e) {
-                task.setEstimatedHours(null);
+                // Column doesn't exist, set to null or default
+                task.setEstimatedHours(0.0);
             }
 
             return task;
@@ -89,12 +140,66 @@ public class TaskRepository {
         }
     }
 
-    // Existing methods (from previous implementation)
+     /**
+     * #178 - Repository: create(Task)
+     * Creates a new task in the database
+     * Note: We need to check if we should add estimated_hours column to TASK table
+     */
     public Task create(Task task) {
-        // ... existing create method
+        // First, check if the subproject exists
+        if (!subProjectExists(task.getSubProjectId())) {
+            throw new IllegalArgumentException("Subproject with ID " + task.getSubProjectId() + " does not exist");
+        }
+
+        // SQL for insertion - check if estimated_hours column exists in your TASK table
+        // If not, you may need to alter the table: ALTER TABLE task ADD COLUMN estimated_hours DOUBLE;
         String sql = """
             INSERT INTO task (subproject_id, name, description, deadline, estimated_hours)
             VALUES (?, ?, ?, ?, ?)
+            """;
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+      
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, task.getSubProjectId());
+            ps.setString(2, task.getName());
+            ps.setString(3, task.getDescription());
+
+            if (task.getDeadline() != null) {
+                ps.setDate(4, Date.valueOf(task.getDeadline()));
+            } else {
+                ps.setNull(4, Types.DATE);
+            }
+
+            if (task.getEstimatedHours() != null) {
+                ps.setDouble(5, task.getEstimatedHours());
+            } else {
+                ps.setNull(5, Types.DOUBLE);
+            }
+
+            return ps;
+        }, keyHolder);
+
+        // Get the generated ID and set it on the task
+        Long generatedId = keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+        task.setId(generatedId);
+
+        return task;
+    }
+
+    /**
+     * Alternative create method if estimated_hours column doesn't exist in TASK table
+     * This would create a task without estimated hours (to match original schema)
+     */
+    public Task createWithoutEstimatedHours(Task task) {
+        if (!subProjectExists(task.getSubProjectId())) {
+            throw new IllegalArgumentException("Subproject with ID " + task.getSubProjectId() + " does not exist");
+        }
+
+        String sql = """
+            INSERT INTO task (subproject_id, name, description, deadline)
+            VALUES (?, ?, ?, ?)
             """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -126,17 +231,26 @@ public class TaskRepository {
         return task;
     }
 
+    /**
+     * Check if a subproject exists
+     */
     private boolean subProjectExists(Long subProjectId) {
         String sql = "SELECT COUNT(*) FROM subproject WHERE id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, subProjectId);
         return count != null && count > 0;
     }
 
+    /**
+     * Find tasks by subproject ID
+     */
     public List<Task> findBySubProjectId(Long subProjectId) {
         String sql = "SELECT * FROM task WHERE subproject_id = ? ORDER BY deadline";
         return jdbcTemplate.query(sql, taskRowMapper, subProjectId);
     }
 
+    /**
+     * Find a task by ID
+     */
     public Optional<Task> findById(Long id) {
         String sql = "SELECT * FROM task WHERE id = ?";
         try {
