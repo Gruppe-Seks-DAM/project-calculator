@@ -52,15 +52,14 @@ public class TaskService {
         return taskRepository.getSubProjectIdForTask(taskId);
     }
 
- 
-    
+
     public Optional<Task> findById(Long id) {
         return taskRepository.findById(id);
     }
 
     public boolean updateTask(Task task) {
         return taskRepository.update(task);
-  
+    }
     /**
      * #179 - Service: createTask(Task)
      * Creates a new task with validation

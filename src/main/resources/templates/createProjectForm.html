@@ -19,7 +19,7 @@
 <main>
     <h1>Create project</h1>
 
-    <form th:action="@{|/projects}" method="post" th:object="${projectDto}">
+    <form th:action="@{/projects}" method="post" th:object="${projectDto}">
         <div>
             <label for="name">Name *</label>
             <input id="name" th:field="*{name}" type="text" maxlength="50" required />

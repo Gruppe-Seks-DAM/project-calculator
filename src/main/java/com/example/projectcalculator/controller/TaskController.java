@@ -20,6 +20,12 @@ import java.util.Optional;
 @RequestMapping("/tasks")
 public class TaskController {
 
+    private final TaskService service;
+
+    TaskController(TaskService service){
+        this.service = service;
+    }
+
     /**
      * #189 - POST /tasks/[id]/delete
      * Handle task deletion
@@ -64,10 +70,6 @@ public class TaskController {
         return "tasks/confirm-delete";
     }
 
-    // Existing methods (from previous implementation)
-    @GetMapping("/create")
-    public String showCreateForm(@RequestParam Long subProjectId, Model model) {}
-
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
         Optional<Task> opt = service.findById(id);
@@ -104,12 +106,12 @@ public class TaskController {
 
         boolean updated = service.updateTask(t);
         if (!updated) {
-            model.addAttribute("error","Failed to update task");
+            model.addAttribute("error", "Failed to update task");
             model.addAttribute("taskId", id);
             return "tasks/edit";
         }
         return "redirect:/tasks?success=Task updated";
-
+    }
     /**
      * Show form to create a new task
      */
