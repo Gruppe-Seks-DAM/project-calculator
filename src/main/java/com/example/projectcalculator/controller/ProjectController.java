@@ -14,13 +14,14 @@ import java.util.List;
 @Controller
 @RequestMapping("/projects")
 public class ProjectController {
+
     private final ProjectService service;
 
     public ProjectController(ProjectService service) {
         this.service = service;
     }
 
-    @GetMapping("/projects")
+    @GetMapping
     public String showProjects(Model model) {
         List<Project> projects = service.getAllProjects();
         model.addAttribute("projects", projects);
@@ -30,30 +31,34 @@ public class ProjectController {
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("projectDto", new ProjectDto());
-        System.out.println("DEBUG: /projects/create handler hit");
         return "createProjectForm";
     }
 
     @PostMapping
-    public String createProject(@Valid @ModelAttribute("projectDto")
-                                    ProjectDto projectDto,
-                                    BindingResult br) {
+    public String createProject(
+            @Valid @ModelAttribute("projectDto")
+            ProjectDto projectDto,
+            BindingResult br) {
 
         if (br.hasErrors()) return "createProjectForm";
 
         service.create(projectDto);
         return "redirect:/projects";
     }
-      @PostMapping("/{id}/delete")
-    public String deleteProject(@PathVariable long id) {
 
+    @PostMapping("/{id}/delete")
+    public String deleteProject(@PathVariable long id) {
         boolean deleted = service.delete(id);
 
         if (!deleted) {
             return "redirect:/projects?error=Could not delete project";
         }
-
         return "redirect:/projects?success=Project deleted successfully";
     }
-}
 
+    @GetMapping("/debug/list")
+    @ResponseBody
+    public List<Project> debugList() {
+        return service.getAllProjects(); // eller repo.findAllProjects via service
+    }
+}

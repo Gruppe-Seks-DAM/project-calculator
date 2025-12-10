@@ -19,6 +19,26 @@ public class ProjectRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public boolean create(Project project) {
+        String sql = """
+                            
+                INSERT INTO project (name, description, deadline)
+                            VALUES (?, ?, ?)
+            """;
+
+        int rows = jdbcTemplate.update(
+                sql,
+                project.getName(),
+                project.getDescription(),
+                project.getDeadline()
+        );
+
+        return rows > 0;
+    }
+
+    /**
+     * Henter alle projekter fra project-tabellen.
+     */
     public List<Project> findAllProjects() {
         String sql = """
                 SELECT id, name, description, deadline
@@ -57,4 +77,20 @@ public class ProjectRepository {
             return new Project(id, name, description, deadline);
         }
     }
+
+  public boolean delete(long id) {
+        String sql = "DELETE FROM project WHERE id = ?";
+        int rows = jdbcTemplate.update(sql, id);
+        return rows > 0;
+    }
 }
+
+
+/*
+ rows = antal rækker påvirket af SQL-operationen.
+ rows > 0  → en række blev slettet/opdateret
+ rows == 0 → ingen rækker matchede betingelsen (fx ID findes ikke).
+
+ Returner ikke rows > 0? boolean = false
+*/
+

@@ -8,18 +8,17 @@ import java.util.List;
 
 @Service
 public class ProjectService {
+    private final ProjectRepository repository;
 
-    private final ProjectRepository projectRepository;
-
-    public ProjectService(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public ProjectService(ProjectRepository repository) {
+        this.repository = repository;
     }
 
     /**
      * Service-metoden som controlleren kalder.
      */
     public List<Project> getAllProjects() {
-        return projectRepository.findAllProjects();
+        return repository.findAllProjects();
     }
 
     public boolean create(ProjectDto dto) {
@@ -27,11 +26,11 @@ public class ProjectService {
         p.setName(dto.getName());
         p.setDescription(dto.getDescription());
         p.setDeadline(dto.getDeadline());
-        return projectRepository.createProject(p);
+        return repository.create(p);
     }
-  
+
   public boolean delete(long id) {
-        return projectRepository.deleteProject(id);
+        return repository.delete(id);
     }
 }
 

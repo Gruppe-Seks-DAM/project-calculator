@@ -10,6 +10,11 @@ public class Project {
     private String description;
     private LocalDate deadline;
 
+    // placeholder for at omgå thymeleaf errors til
+    public Double getTotalEstimatedHours() {
+        return null;
+    }
+
     public Project() {
     }
 

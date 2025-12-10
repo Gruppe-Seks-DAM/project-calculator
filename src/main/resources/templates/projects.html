@@ -139,6 +139,14 @@
         </div>
     </div>
 
+    <div th:if="${param.success}" class="alert alert-success">
+        <p th:text="${param.success}"></p>
+    </div>
+
+    <div th:if="${param.error}" class="alert alert-danger">
+        <p th:text="${param.error}"></p>
+    </div>
+
     <div class="projects-list" th:if="${!#lists.isEmpty(projects)}">
         <!-- loop over projekter -->
         <div th:each="p, stat : ${projects}">
@@ -188,10 +196,11 @@
             </div>
 
             <!-- lille delete-link under boksen -->
-            <a class="delete-link"
-               th:href="@{|/projects/${p.id}/delete|}">
-                Slet projekt
-            </a>
+            <form th:action="@{/projects/{id}/delete(id=${p.id})}"
+                  method="post"
+                  style="display:inline;">
+                <button type="submit" class="delete-link">Slet projekt</button>
+            </form>
         </div>
     </div>
 
