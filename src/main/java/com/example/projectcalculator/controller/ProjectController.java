@@ -11,10 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// MERGES FØRST
-// Merge US3 efter (edit)
-// TODO implementer at kunne create project fra forsiden, ligenu kan man kun fra /projects/create
-
 @Controller
 @RequestMapping("/projects")
 public class ProjectController {
