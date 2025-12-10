@@ -1,6 +1,8 @@
 package com.example.projectcalculator.repository;
 
 import com.example.projectcalculator.model.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -99,6 +101,46 @@ public class TaskRepository {
     };
 
     /**
+     * #190 - Repository: deleteById(id)
+     * Deletes a task by its ID
+     * Note: Database should have CASCADE delete for subtasks or we handle it manually
+     */
+    public boolean deleteById(Long id) {
+        // First, check if the task exists
+        if (!existsById(id)) {
+            return false;
+        }
+
+        // Delete the task (database should handle cascade deletion of subtasks)
+        String sql = "DELETE FROM task WHERE id = ?";
+        int rowsDeleted = jdbcTemplate.update(sql, id);
+
+        return rowsDeleted > 0;
+    }
+
+    /**
+     * Check if a task exists by ID
+     */
+    public boolean existsById(Long id) {
+        String sql = "SELECT COUNT(*) FROM task WHERE id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return count != null && count > 0;
+    }
+
+    /**
+     * Get subproject ID for a task (useful for redirect after deletion)
+     */
+    public Optional<Long> getSubProjectIdForTask(Long taskId) {
+        String sql = "SELECT subproject_id FROM task WHERE id = ?";
+        try {
+            Long subProjectId = jdbcTemplate.queryForObject(sql, Long.class, taskId);
+            return Optional.ofNullable(subProjectId);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+     /**
      * #178 - Repository: create(Task)
      * Creates a new task in the database
      * Note: We need to check if we should add estimated_hours column to TASK table
@@ -172,6 +214,12 @@ public class TaskRepository {
                 ps.setDate(4, Date.valueOf(task.getDeadline()));
             } else {
                 ps.setNull(4, Types.DATE);
+            }
+
+            if (task.getEstimatedHours() != null) {
+                ps.setDouble(5, task.getEstimatedHours());
+            } else {
+                ps.setNull(5, Types.DOUBLE);
             }
 
             return ps;

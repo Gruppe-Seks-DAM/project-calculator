@@ -13,12 +13,11 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.Optional;
 
 @Service
 public class TaskService {
-
 
     private final TaskRepository taskRepository;
     private final Validator validator;
@@ -28,6 +27,32 @@ public class TaskService {
         this.taskRepository = taskRepository;
         this.validator = validator;
     }
+
+    /**
+     * #191 - Service: deleteTask(id)
+     * Deletes a task by ID
+     */
+    @Transactional
+    public boolean deleteTask(Long id) {
+        // First, get the subproject ID for potential redirect
+        Optional<Long> subProjectIdOpt = taskRepository.getSubProjectIdForTask(id);
+
+        if (subProjectIdOpt.isEmpty()) {
+            return false; // Task doesn't exist
+        }
+
+        // Delete the task
+        return taskRepository.deleteById(id);
+    }
+
+    /**
+     * Get subproject ID for a task
+     */
+    public Optional<Long> getSubProjectIdForTask(Long taskId) {
+        return taskRepository.getSubProjectIdForTask(taskId);
+    }
+
+ 
     
     public Optional<Task> findById(Long id) {
         return taskRepository.findById(id);
