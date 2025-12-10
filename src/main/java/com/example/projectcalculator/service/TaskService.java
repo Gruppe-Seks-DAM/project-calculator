@@ -2,6 +2,9 @@ package com.example.projectcalculator.service;
 
 import com.example.projectcalculator.model.Task;
 import com.example.projectcalculator.repository.TaskRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,7 @@ import java.util.Set;
 @Service
 public class TaskService {
 
+
     private final TaskRepository taskRepository;
     private final Validator validator;
 
@@ -24,7 +28,14 @@ public class TaskService {
         this.taskRepository = taskRepository;
         this.validator = validator;
     }
+    
+    public Optional<Task> findById(Long id) {
+        return taskRepository.findById(id);
+    }
 
+    public boolean updateTask(Task task) {
+        return taskRepository.update(task);
+  
     /**
      * #179 - Service: createTask(Task)
      * Creates a new task with validation
