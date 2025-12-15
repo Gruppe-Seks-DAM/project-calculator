@@ -54,7 +54,7 @@
 
           <div class="subproject-meta">
             Total estimated hours:
-            <span th:text="${sp.totalEstimatedHours != null ? sp.totalEstimatedHours : '—'}">—</span>
+            <span th:text="${sp.totalEstimatedHours != 0 ? sp.totalEstimatedHours : '—'}">—</span>
           </div>
         </div>
 
