@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<h2>Create Subtask</h2>
+
+<form th:action="@{/tasks/{id}/subtasks(id=${taskId})}"
+      th:object="${subtaskDto}"
+      method="post">
+
+    <label>Name</label>
+    <input th:field="*{name}" />
+    <div th:errors="*{name}"></div>
+
+    <label>Description</label>
+    <textarea th:field="*{description}"></textarea>
+
+    <label>Deadline</label>
+    <input type="date" th:field="*{deadline}" />
+
+    <label>Estimated hours</label>
+    <input type="number" step="0.5" th:field="*{estimatedHours}" />
+    <div th:errors="*{estimatedHours}"></div>
+
+    <button type="submit">Create</button>
+</form>
+
+</body>
+</html>
