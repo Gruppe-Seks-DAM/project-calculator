@@ -18,11 +18,10 @@
             justify-content: center;
         }
 
-        /* Grøn ramme rundt om \`canvas\` */
         .page-frame {
             margin: 20px;
             border: 2px solid #0c3c57;
-            background-color: #ffffff; /* make canvas white */
+            background-color: #ffffff;
             width: 90vw;
             max-width: 1200px;
             min-height: 90vh;
@@ -46,7 +45,6 @@
             font-size: 14px;
         }
 
-        /* Liste af projekter */
         .projects-list {
             margin-top: 40px;
         }
@@ -64,7 +62,6 @@
             margin-bottom: 30px;
         }
 
-        /* Selve projekt-boksen */
         .project-box {
             flex: 1;
             border: 1px solid #000;
@@ -85,7 +82,6 @@
             margin-top: 4px;
         }
 
-        /* Rund Edit-knap */
         .edit-button {
             width: 48px;
             height: 48px;
@@ -95,6 +91,8 @@
             align-items: center;
             justify-content: center;
             text-decoration: none;
+            border: none;
+            cursor: pointer;
         }
 
         .edit-icon {
@@ -102,21 +100,6 @@
             font-size: 20px;
         }
 
-        .delete-link {
-            display: inline-block;
-            margin-top: 6px;
-            font-size: 11px;
-            color: #b00020;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .delete-link:hover {
-            text-decoration: underline;
-        }
-
-        /* Tom-tilstand */
         .empty-state {
             margin-top: 60px;
             text-align: center;
@@ -129,78 +112,67 @@
 
 <div class="page-frame">
 
-    <!-- Top-overskrift -->
     <div class="header">
-        <div class="header-title">
-            PROJEKTOVERSIGT
-        </div>
+        <div class="header-title">PROJEKTOVERSIGT</div>
         <div class="header-subtitle">
             Se alle projekter og vælg hvilket du vil arbejde videre med.
         </div>
     </div>
 
-    <div th:if="${param.success}" class="alert alert-success">
+    <!-- Create button -->
+    <div style="text-align:center; margin-bottom:30px;">
+        <a th:href="@{/projects/create}">Opret nyt projekt</a>
+    </div>
+
+    <div th:if="${param.success}">
         <p th:text="${param.success}"></p>
     </div>
 
-    <div th:if="${param.error}" class="alert alert-danger">
+    <div th:if="${param.error}">
         <p th:text="${param.error}"></p>
     </div>
 
     <div class="projects-list" th:if="${!#lists.isEmpty(projects)}">
-        <!-- loop over projekter -->
         <div th:each="p, stat : ${projects}">
-            <!-- label: PROJEKT 1, PROJEKT 2, ... -->
             <div class="project-label">
                 PROJEKT <span th:text="${stat.index + 1}">1</span>
             </div>
 
             <div class="project-row">
-                <!-- rektanglet med projektinfo -->
                 <div class="project-box">
-
-                    <!-- NAVN med fallback -->
                     <div class="project-name"
-                         th:text="${#strings.isEmpty(p.name)
-                                    ? 'Administrativ IT-Løsning for KEA'
-                                    : p.name}">
-                        Administrativ IT-Løsning for KEA
+                         th:text="${#strings.isEmpty(p.name) ? 'Administrativ IT-Løsning for KEA' : p.name}">
                     </div>
 
-                    <!-- DEADLINE med fallback -->
                     <div class="project-meta">
                         Deadline:
-                        <span th:text="${p.deadline != null
-                                        ? p.deadline
-                                        : '24/12/2025'}">
-                            24/12/2025
-                        </span>
+                        <span th:text="${p.deadline != null ? p.deadline : '24/12/2025'}"></span>
                     </div>
 
-                    <!-- TOTAL ESTIMERET TID med fallback -->
                     <div class="project-meta">
                         Total estimerede timer:
-                        <span th:text="${p.totalEstimatedHours != null
-                                        ? p.totalEstimatedHours
-                                        : '650'}">
-                            650
-                        </span>
+                        <span th:text="${p.totalEstimatedHours != null ? p.totalEstimatedHours : '650'}"></span>
                     </div>
                 </div>
 
-                <!-- rund edit-knap -->
-                <a class="edit-button"
-                   th:href="@{|/projects/${p.id}/edit|}">
-                    <span class="edit-icon">✏</span>
-                </a>
-            </div>
+                <!-- ACTION BUTTONS -->
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    <!-- Edit -->
+                    <a class="edit-button"
+                       th:href="@{|/projects/${p.id}/edit|}">
+                        <span class="edit-icon">✏</span>
+                    </a>
 
-            <!-- lille delete-link under boksen -->
-            <form th:action="@{/projects/{id}/delete(id=${p.id})}"
-                  method="post"
-                  style="display:inline;">
-                <button type="submit" class="delete-link">Slet projekt</button>
-            </form>
+                    <!-- Delete -->
+                    <form th:action="@{/projects/{id}/delete(id=${p.id})}"
+                          method="post"
+                          onsubmit="return confirm('Er du sikker?');">
+                        <button type="submit" class="edit-button">
+                            <span class="edit-icon">🗑</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -4,7 +4,10 @@ import com.example.projectcalculator.dto.ProjectDto;
 import com.example.projectcalculator.model.Project;
 import com.example.projectcalculator.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectService {
@@ -27,6 +30,19 @@ public class ProjectService {
         p.setDescription(dto.getDescription());
         p.setDeadline(dto.getDeadline());
         return repository.create(p);
+    }
+
+    public Optional<Project> findById(Long id) {
+        return repository.findById(id);
+    }
+
+    @Transactional
+    public boolean updateProject(Project project) {
+        // Check if project exists
+        if (project.getId() == null || !repository.findById(project.getId()).isPresent()) {
+            return false;
+        }
+        return repository.update(project);
     }
 
   public boolean delete(long id) {
