@@ -85,7 +85,6 @@ public class ProjectRepository {
     }
 }
 
-
 /*
  rows = antal rækker påvirket af SQL-operationen.
  rows > 0  → en række blev slettet/opdateret

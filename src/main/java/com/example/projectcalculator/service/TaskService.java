@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.validation.ConstraintViolation;
@@ -14,7 +13,6 @@ import jakarta.validation.Validator;
 
 import java.util.List;
 import java.util.Set;
-import java.util.Optional;
 
 @Service
 public class TaskService {
