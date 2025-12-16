@@ -1,11 +1,11 @@
-CREATE TABLE project (
+CREATE TABLE IF NOT EXISTS project (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     description VARCHAR(200),
     deadline DATE
 );
 
-CREATE TABLE subproject (
+CREATE TABLE IF NOT EXISTS subproject (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     project_id BIGINT NOT NULL,
     name VARCHAR(50) NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE subproject (
                              ON DELETE CASCADE
 );
 
-CREATE TABLE task (
+CREATE TABLE IF NOT EXISTS task (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     subproject_id BIGINT NOT NULL,
     name VARCHAR(50) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE task (
                        ON DELETE CASCADE
 );
 
-CREATE TABLE subtask (
+CREATE TABLE IF NOT EXISTS subtask (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     task_id BIGINT NOT NULL,
     name VARCHAR(50) NOT NULL,
