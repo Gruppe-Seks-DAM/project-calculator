@@ -21,7 +21,7 @@ public class SubProjectController {
 
     @GetMapping
     public String listSubProjects(@PathVariable long projectId, Model model) {
-        model.addAttribute("subprojects", service.getAllSubProjects());
+        model.addAttribute("subprojects", service.getSubProjectsByProjectId(projectId));
         model.addAttribute("projectId", projectId);
         return "subprojects";
     }

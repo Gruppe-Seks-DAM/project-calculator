@@ -9,6 +9,8 @@ public class SubProject {
     private String name;
     private String description;
     private LocalDate deadline;
+    private Double estimatedHours;
+
 
     public SubProject() {
     }
@@ -50,5 +52,11 @@ public class SubProject {
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
+    }
+    public Double getTotalEstimatedHours() {
+        return estimatedHours;
+    }
+    public void setEstimatedHours(Double hours) {
+        this.estimatedHours = hours;
     }
 }

@@ -33,6 +33,19 @@ public class SubProjectRepository {
     }
 
     /**
+     * Henter subprojects for et givent project_id.
+     */
+    public List<SubProject> findByProjectId(long projectId) {
+        String sql = """
+                SELECT id, name, description, deadline, project_id
+                FROM subproject
+                WHERE project_id = ?
+                ORDER BY id
+                """;
+        return jdbcTemplate.query(sql, new Object[]{projectId}, new SubProjectRowMapper());
+    }
+
+    /**
      * Opretter et nyt SubProject til et givet projekt.
      */
     public boolean createSubProject(SubProject subProject, long projectId) {

@@ -9,11 +9,7 @@ public class Project {
     private String name;
     private String description;
     private LocalDate deadline;
-
-    // placeholder for at omgå thymeleaf errors til
-    public Double getTotalEstimatedHours() {
-        return null;
-    }
+    private Double estimatedHours;
 
     public Project() {
     }
@@ -55,5 +51,11 @@ public class Project {
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
+    }
+    public Double getTotalEstimatedHours() {
+        return estimatedHours;
+    }
+    public void setEstimatedHours(Double estimatedHours) {
+        this.estimatedHours = estimatedHours;
     }
 }

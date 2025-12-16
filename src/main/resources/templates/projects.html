@@ -6,137 +6,49 @@
     <title>Projekter</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: Arial, sans-serif; background-color: #fff; display:flex; justify-content:center; }
+        .page-frame { margin:20px; border:2px solid #0c3c57; background:#fff; width:90vw; max-width:1200px; min-height:80vh; padding:40px 60px; position:relative; }
 
-        body {
-            margin: 0px;
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-        }
+        /* Header (matched to subprojects.html) */
+        .header { text-align:center; margin-bottom:24px; }
+        .header-title { font-size:22px; font-weight:bold; letter-spacing:1px; }
+        .header-subtitle { margin-top:8px; font-size:13px; color:#444; }
 
-        /* Grøn ramme rundt om \`canvas\` */
-        .page-frame {
-            margin: 20px;
-            border: 2px solid #0c3c57;
-            background-color: #ffffff; /* make canvas white */
-            width: 90vw;
-            max-width: 1200px;
-            min-height: 90vh;
-            padding: 40px 60px;
-            position: relative;
-        }
+        /* Actions (matched to subprojects.html) */
+        .actions { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+        .create-link { text-decoration:none; background:#0c3c57; color:#fff; padding:8px 14px; border-radius:6px; }
+        .create-link:hover { opacity:0.95; }
+        .back-link { color:#0c3c57; text-decoration:none; font-size:13px; }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .header-title {
-            font-size: 26px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .header-subtitle {
-            margin-top: 10px;
-            font-size: 14px;
-        }
-
-        /* Liste af projekter */
-        .projects-list {
-            margin-top: 40px;
-        }
-
-        .project-label {
-            font-size: 13px;
-            letter-spacing: 3px;
-            margin-bottom: 8px;
-        }
-
-        .project-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 30px;
-        }
-
-        /* Selve projekt-boksen */
-        .project-box {
-            flex: 1;
-            border: 1px solid #000;
-            padding: 18px 24px;
-            margin-right: 25px;
-        }
-
-        .project-name {
-            font-size: 16px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .project-meta {
-            font-size: 13px;
-            color: #444;
-            margin-top: 4px;
-        }
-
-        /* Rund Edit-knap */
-        .edit-button {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background-color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-        }
-
-        .edit-icon {
-            color: #fff;
-            font-size: 20px;
-        }
-
-        .delete-link {
-            display: inline-block;
-            margin-top: 6px;
-            font-size: 11px;
-            color: #b00020;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .delete-link:hover {
-            text-decoration: underline;
-        }
-
-        /* Tom-tilstand */
-        .empty-state {
-            margin-top: 60px;
-            text-align: center;
-            font-style: italic;
-            color: #777;
-        }
+        /* List styles (matched to subprojects.html) */
+        .projects-list { margin-top:20px; }
+        .project-label { font-size:13px; letter-spacing:3px; margin-bottom:8px; }
+        .project-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
+        .project-box { flex:1; border:1px solid #000; padding:16px 20px; margin-right:20px; }
+        .project-name { font-size:15px; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+        .project-meta { font-size:13px; color:#444; margin-top:4px; }
+        .circle-button { width:44px; height:44px; border-radius:50%; background:#000; display:flex; align-items:center; justify-content:center; text-decoration:none; color:#fff; }
+        .delete-form { margin-top:6px; }
+        .delete-button { background:none; border:none; color:#b00020; font-size:11px; text-transform:uppercase; letter-spacing:1px; cursor:pointer; padding:0; }
+        .delete-button:hover { text-decoration:underline; }
+        .empty-state { margin-top:60px; text-align:center; font-style:italic; color:#777; }
     </style>
 </head>
 <body>
 
 <div class="page-frame">
 
-    <!-- Top-overskrift -->
+    <!-- Centered header matching subprojects.html -->
     <div class="header">
-        <div class="header-title">
-            PROJEKTOVERSIGT
-        </div>
-        <div class="header-subtitle">
-            Se alle projekter og vælg hvilket du vil arbejde videre med.
-        </div>
+        <div class="header-title">PROJEKTOVERSIGT</div>
+        <div class="header-subtitle">Se alle projekter og vælg hvilket du vil arbejde videre med.</div>
+    </div>
+
+    <!-- Actions row (same placement as subprojects.html) -->
+    <div class="actions">
+        <div></div>
+        <a class="create-link" th:href="@{/projects/create}">Create project</a>
     </div>
 
     <div th:if="${param.success}" class="alert alert-success">
@@ -148,59 +60,40 @@
     </div>
 
     <div class="projects-list" th:if="${!#lists.isEmpty(projects)}">
-        <!-- loop over projekter -->
         <div th:each="p, stat : ${projects}">
-            <!-- label: PROJEKT 1, PROJEKT 2, ... -->
-            <div class="project-label">
-                PROJEKT <span th:text="${stat.index + 1}">1</span>
-            </div>
+            <div class="project-label">PROJEKT <span th:text="${stat.index + 1}">1</span></div>
 
             <div class="project-row">
-                <!-- rektanglet med projektinfo -->
-                <div class="project-box">
-
-                    <!-- NAVN med fallback -->
+                <a class="project-box project-link" th:href="@{|/projects/${p.id}/subprojects|}">
                     <div class="project-name"
-                         th:text="${#strings.isEmpty(p.name)
-                                    ? 'Administrativ IT-Løsning for KEA'
-                                    : p.name}">
+                         th:text="${#strings.isEmpty(p.name) ? 'Administrativ IT-Løsning for KEA' : p.name}">
                         Administrativ IT-Løsning for KEA
                     </div>
 
-                    <!-- DEADLINE med fallback -->
                     <div class="project-meta">
                         Deadline:
-                        <span th:text="${p.deadline != null
-                                        ? p.deadline
-                                        : '24/12/2025'}">
-                            24/12/2025
-                        </span>
+                        <span th:text="${p.deadline != null ? p.deadline : '24/12/2025'}">24/12/2025</span>
                     </div>
 
-                    <!-- TOTAL ESTIMERET TID med fallback -->
                     <div class="project-meta">
                         Total estimerede timer:
-                        <span th:text="${p.totalEstimatedHours != null
-                                        ? p.totalEstimatedHours
-                                        : '650'}">
-                            650
-                        </span>
+                        <span th:text="${p.totalEstimatedHours != null ? p.totalEstimatedHours : '650'}">650</span>
                     </div>
-                </div>
-
-                <!-- rund edit-knap -->
-                <a class="edit-button"
-                   th:href="@{|/projects/${p.id}/edit|}">
-                    <span class="edit-icon">✏</span>
                 </a>
+
+                <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+                    <a class="circle-button" th:href="@{|/projects/${p.id}/edit|}" title="Edit">✏</a>
+
+                    <form class="delete-form" th:action="@{/projects/{id}/delete(id=${p.id})}" method="post" style="display:block;">
+                        <button type="submit" class="delete-button">Slet projekt</button>
+                    </form>
+                </div>
             </div>
 
-            <!-- lille delete-link under boksen -->
-            <form th:action="@{/projects/{id}/delete(id=${p.id})}"
-                  method="post"
-                  style="display:inline;">
-                <button type="submit" class="delete-link">Slet projekt</button>
-            </form>
+            <!-- Optional CSS to ensure link looks like the box -->
+            <style>
+                .project-link { text-decoration: none; color: inherit; display: block; }
+            </style>
         </div>
     </div>
 

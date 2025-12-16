@@ -23,6 +23,13 @@ public class SubProjectService {
     }
 
     /**
+     * Get subprojects for a specific project.
+     */
+    public List<SubProject> getSubProjectsByProjectId(long projectId) {
+        return subprojectRepository.findByProjectId(projectId);
+    }
+
+    /**
      * Create a SubProject under the given projectId.
      * Returns true on success.
      */
