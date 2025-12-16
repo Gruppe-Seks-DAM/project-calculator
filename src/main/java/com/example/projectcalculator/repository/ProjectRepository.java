@@ -65,7 +65,7 @@ public class ProjectRepository {
         return rows > 0;
     }
 
-    private static class ProjectRowMapper implements RowMapper<Project> {
+     static class ProjectRowMapper implements RowMapper<Project> {
         @Override
         public Project mapRow(ResultSet rs, int rowNum) throws SQLException {
             Long id = rs.getLong("id");

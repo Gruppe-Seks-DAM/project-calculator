@@ -60,7 +60,7 @@ public class SubProjectRepository {
      * Mapper én række fra subproject-tabellen til et SubProject-objekt.
      * Tasks sættes til null her; kan indlæses separat hvis nødvendigt.
      */
-    private static class SubProjectRowMapper implements RowMapper<SubProject> {
+    static class SubProjectRowMapper implements RowMapper<SubProject> {
         @Override
         public SubProject mapRow(ResultSet rs, int rowNum) throws SQLException {
             Long id = rs.getLong("id");
