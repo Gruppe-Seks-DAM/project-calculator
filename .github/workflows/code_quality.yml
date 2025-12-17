@@ -2,7 +2,7 @@ name: Qodana
 
 on:
   push:
-    branches: [ main, 6-ts2-cicd ]
+    branches: [ main, dev]
   pull_request:
 
 permissions:
