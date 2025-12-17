@@ -1,28 +1,41 @@
 name: Qodana
+
 on:
-  workflow_dispatch:
-  pull_request:
   push:
-    branches: # Specify your branches here
-      - main # The 'main' branch
-      - 'releases/*' # The release branches
+    branches: [ main, 6-ts2-cicd ]
+  pull_request:
+
+permissions:
+  contents: read
+  security-events: write
 
 jobs:
   qodana:
+    name: Qodana Static Analysis
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      checks: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Recommended: ensure Maven + Java is available for projects needing build
+      - name: Set up Temurin JDK 21
+        uses: actions/setup-java@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}  # to check out the actual pull request commit, not the merge commit
-          fetch-depth: 0  # a full history is required for pull request analysis
-      - name: 'Qodana Scan'
-        uses: JetBrains/qodana-action@v2025.2
-        with:
-          pr-mode: false
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Run Qodana scan
+        uses: JetBrains/qodana-action@v2024.2.6
         env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
-          QODANA_ENDPOINT: 'https://qodana.cloud'
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}   # ← This activates cloud upload
+        with:
+          upload-result: true
+          results-dir: qodana
+
+      # Optional: Also upload an HTML report you can download from Actions
+      - name: Upload Qodana report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qodana-report
+          path: qodana/
