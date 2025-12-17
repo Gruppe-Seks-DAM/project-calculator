@@ -36,6 +36,9 @@ Based on requirements from Alpha Solutions’ kickoff presentation.
 ## ▶️ Running the Application
 1. Clone the repository  
 2. Configure MySQL connection in `application.properties`  
-3. Run with:  
+3. The application can be run either via Maven or directly from IntelliJ IDEA.
+During development, the project was executed using IntelliJ IDEA by running the main class annotated with @SpringBootApplication.
+
+Alternatively, the application can be started from the command line using:  
    ```bash
    mvn spring-boot:run
