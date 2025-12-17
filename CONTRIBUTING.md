@@ -55,7 +55,7 @@ Double-check:
 * The code runs without errors
 * Your feature fits the project scope
 * Documentation is updated (if adding new behavior)
-* The branch is up to date with `main`
+* The branch is up to date with `dev`
 * The PR includes a short explanation of *why* the change was made
 
 ---
