@@ -23,13 +23,15 @@ Based on requirements from Alpha Solutions’ kickoff presentation.
 - Simple UI for viewing project structure
 
 ---
-
+**Java 21**
 ## 🛠 Tech Stack
-- **Java 21**
-- **Spring Boot**
-- **JDBC + MySQL**
-- **HTML, CSS, Thymeleaf**
-- Developed in **IntelliJ IDEA 2025.1**
+The project is developed using; 
+- **Frontend: Thymeleaf 3.1.3, HTML5, CSS3**
+- **Backend: Java 21, Spring Boot 3.5.7, Spring JDBC Template**
+- **Database: MySQL 8.0**
+- **CI/CD: GitHub Actions**
+- **Hosting: Microsoft Azure (application and database)**
+- **IDE: IntelliJ IDEA 2025.3**
 
 ---
 
