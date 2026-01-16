@@ -17,8 +17,9 @@ public class ProjectController {
 
     public ProjectController(ProjectService service) {
         this.service = service;
+
     }
-    ///  LISTS ALL PROJECTS
+    ///  LISTS ALL PROJECTS BY ID AND ADDS THEM TO THE MODEL
     @GetMapping
     public String showProjects(Model model) {
         List<Project> projects = service.getAllProjects();
@@ -40,6 +41,36 @@ public class ProjectController {
         }
         return "redirect:/projects?success=Project created successfully";
     }
+
+    /// SHOW FORM TO UPDATE AN EXISTING PROJECT
+    @GetMapping("/{id}/edit")
+    public String showUpdateForm(@PathVariable long id, Model model) {
+        Project project = service.getProjectById(id);
+
+        if (project == null) {
+            return "redirect:/projects?error=Project not found";
+        }
+
+        model.addAttribute("project", project);
+        return "editProjectForm";
+    }
+
+    /// UPDATE AN EXISTING PROJECT AND REDIRECT WITH SUCCESS OR ERROR MESSAGE
+    @PostMapping("/{id}/edit")
+    public String updateProject(@PathVariable long id,
+                                @ModelAttribute("project") Project project) {
+
+        project.setId(id); // ensure correct ID (important)
+
+        boolean updated = service.updateProject(project);
+
+        if (!updated) {
+            return "redirect:/projects?error=Could not update project";
+        }
+
+        return "redirect:/projects?success=Project updated successfully";
+    }
+
     ///  DELETE A PROJECT BY ID AND REDIRECT TO /projects WITH SUCCESS OR ERROR MESSAGE
     @PostMapping("/{id}/delete")
     public String deleteProject(@PathVariable long id) {

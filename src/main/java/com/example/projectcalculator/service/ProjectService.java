@@ -19,6 +19,10 @@ public class ProjectService {
         return projectRepository.listAllProjects();
     }
 
+    public Project getProjectById(long id) {
+        return projectRepository.findProjectById(id);
+    }
+
     public boolean createProject(Project project) {
         return projectRepository.createProject(project);
     }

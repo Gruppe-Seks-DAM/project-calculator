@@ -19,7 +19,7 @@ public class ProjectRepository {
     public ProjectRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-    ///  LISTS  ALL EXISTING PROJECTS
+    ///  LISTS ALL EXISTING PROJECTS ORDERED BY ID
     public List<Project> listAllProjects() {
         String sql = """
                 SELECT id, name, description, deadline
@@ -28,6 +28,18 @@ public class ProjectRepository {
                 """;
         return jdbcTemplate.query(sql, new ProjectRowMapper());
     }
+    ///  FETCHES A PROJECT BY ID
+    public Project findProjectById(long id) {
+        String sql = """
+        SELECT id, name, description, deadline
+        FROM project
+        WHERE id = ?
+        """;
+        /// Execute query; return the project if found, otherwise return null
+        List<Project> results = jdbcTemplate.query(sql, new ProjectRowMapper(), id);
+        return results.isEmpty() ? null : results.get(0);
+    }
+
     ///  CREATE A NEW PROJECT
     public boolean createProject(Project project) {
         String sql = "INSERT INTO project (name, description, deadline) VALUES (?, ?, ?)";
@@ -39,7 +51,7 @@ public class ProjectRepository {
         );
         return rows > 0;
     }
-    ///  UPDATE AN EXISTING PROJECT
+    ///  UPDATE A PROJECT BY ID
     public boolean updateProject(Project project) {
         String sql = """
             UPDATE project
@@ -55,13 +67,13 @@ public class ProjectRepository {
         );
         return rows > 0;
     }
-    ///  DELETE A PROJECT (BY ID)
+    ///  DELETE A PROJECT BY ID
     public boolean deleteProject(long id) {
         String sql = "DELETE FROM project WHERE id = ?";
         int rows = jdbcTemplate.update(sql, id);
         return rows > 0;
     }
-
+    ///
     private static class ProjectRowMapper implements RowMapper<Project> {
         @Override
         public Project mapRow(ResultSet rs, int rowNum) throws SQLException {
