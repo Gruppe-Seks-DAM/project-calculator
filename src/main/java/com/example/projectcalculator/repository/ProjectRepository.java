@@ -73,7 +73,7 @@ public class ProjectRepository {
         int rows = jdbcTemplate.update(sql, id);
         return rows > 0;
     }
-    ///
+    /// ROWMAPPER CLASS CONVERTS DATABASE ROWS INTO PROJECT OBJECTS
     private static class ProjectRowMapper implements RowMapper<Project> {
         @Override
         public Project mapRow(ResultSet rs, int rowNum) throws SQLException {

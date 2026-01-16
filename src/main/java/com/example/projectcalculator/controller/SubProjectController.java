@@ -1,4 +1,3 @@
-// language: java
 package com.example.projectcalculator.controller;
 
 import com.example.projectcalculator.dto.SubProjectDto;

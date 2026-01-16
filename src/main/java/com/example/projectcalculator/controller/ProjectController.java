@@ -17,21 +17,23 @@ public class ProjectController {
 
     public ProjectController(ProjectService service) {
         this.service = service;
-
     }
+
     ///  LISTS ALL PROJECTS BY ID AND ADDS THEM TO THE MODEL
     @GetMapping
     public String showProjects(Model model) {
-        List<Project> projects = service.getAllProjects();
-        model.addAttribute("projects", projects);
+        model.addAttribute("projects", service.getAllProjects());
         return "projects";
     }
+
+
     ///  SHOW FORM TO CREATE A NEW PROJECT
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("project", new Project());
         return "createProjectForm";
     }
+
     ///  CREATE A NEW PROJECT AND REDIRECT TO /projects WITH SUCCESS OR ERROR MESSAGE
     @PostMapping("/create")
     public String createProject(@ModelAttribute("project") Project project) {
