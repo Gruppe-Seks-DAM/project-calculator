@@ -19,7 +19,7 @@
 <main>
   <h1>Create subproject</h1>
 
-  <form th:action="@{|/projects/${projectId}/subprojects|}" method="post" th:object="${subProjectDto}">
+  <form th:action="@{|/projects/${projectId}/subprojects|}" method="post" th:object="${subProject}">
     <div>
       <label for="name">Name *</label>
       <input id="name" th:field="*{name}" type="text" maxlength="50" required />

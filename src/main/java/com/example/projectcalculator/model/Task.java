@@ -1,14 +1,31 @@
 // Task.java (Entity/Model - pure data representation)
 package com.example.projectcalculator.model;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 
 public class Task {
     private Long id;
+    
+    @NotNull(message = "Subproject ID is required")
     private Long subProjectId;
+    
+    @NotNull(message = "Task name is required")
+    @Size(min = 1, max = 50, message = "Task name must be between 1 and 50 characters")
     private String name;
+    
+    @Size(max = 200, message = "Description cannot exceed 200 characters")
     private String description;
+    
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate deadline;
+    
+    @NotNull(message = "Estimated hours is required")
+    @Min(value = 0, message = "Estimated hours must be 0 or greater")
     private Double estimatedHours;
 
     // Default constructor (required for ORM/JDBC)

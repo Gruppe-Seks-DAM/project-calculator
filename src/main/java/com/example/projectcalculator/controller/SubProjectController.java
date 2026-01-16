@@ -1,7 +1,7 @@
 // language: java
 package com.example.projectcalculator.controller;
 
-import com.example.projectcalculator.dto.SubProjectDto;
+import com.example.projectcalculator.model.SubProject;
 import com.example.projectcalculator.service.SubProjectService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -28,20 +28,20 @@ public class SubProjectController {
 
     @GetMapping("/create")
     public String showCreateForm(@PathVariable long projectId, Model model) {
-        model.addAttribute("subProjectDto", new SubProjectDto());
+        model.addAttribute("subProject", new SubProject());
         model.addAttribute("projectId", projectId);
         return "createSubProjectForm";
     }
 
     @PostMapping
     public String createSubProject(@PathVariable long projectId,
-                                   @Valid @ModelAttribute("subProjectDto") SubProjectDto subProjectDto,
+                                   @Valid @ModelAttribute("subProject") SubProject subProject,
                                    BindingResult br) {
         if (br.hasErrors()) {
             return "createSubProjectForm";
         }
 
-        boolean created = service.create(subProjectDto, projectId);
+        boolean created = service.create(subProject, projectId);
         if (!created) {
             return "redirect:/projects/" + projectId + "/subprojects?error=Could not create subproject";
         }

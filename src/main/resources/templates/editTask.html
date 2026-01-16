@@ -5,7 +5,7 @@
 <h2>Edit Task</h2>
 
 <form th:action="@{/tasks/{id}(id=${taskId})}"
-      th:object="${taskDto}"
+      th:object="${task}"
       method="post">
 
     <label>Name</label>

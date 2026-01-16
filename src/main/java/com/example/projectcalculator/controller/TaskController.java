@@ -1,13 +1,8 @@
 package com.example.projectcalculator.controller;
 
-import com.example.projectcalculator.dto.TaskDto;
 import com.example.projectcalculator.model.Task;
 import com.example.projectcalculator.service.TaskService;
 import jakarta.validation.Valid;
-import com.example.projectcalculator.model.Task;
-import com.example.projectcalculator.service.TaskService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -75,13 +70,8 @@ public class TaskController {
         Optional<Task> opt = service.findById(id);
         if (opt.isEmpty()) return "redirect:/tasks?error=Task not found";
 
-        Task t = opt.get();
-        TaskDto dto = new TaskDto();
-        dto.setName(t.getName());
-        dto.setDescription(t.getDescription());
-        dto.setDeadline(t.getDeadline());
-
-        model.addAttribute("taskDto", dto);
+        Task task = opt.get();
+        model.addAttribute("task", task);
         model.addAttribute("taskId", id);
         return "tasks/edit";
     }
@@ -89,7 +79,7 @@ public class TaskController {
     @PostMapping("/{id}")
     public String updateTask(
             @PathVariable Long id,
-            @Valid @ModelAttribute("taskDto") TaskDto dto,
+            @Valid @ModelAttribute("task") Task task,
             BindingResult br,
             Model model
     ) {
@@ -98,13 +88,8 @@ public class TaskController {
             return "tasks/edit";
         }
 
-        Task t = new Task();
-        t.setId(id);
-        t.setName(dto.getName());
-        t.setDescription(dto.getDescription());
-        t.setDeadline(dto.getDeadline());
-
-        boolean updated = service.updateTask(t);
+        task.setId(id);
+        boolean updated = service.updateTask(task);
         if (!updated) {
             model.addAttribute("error", "Failed to update task");
             model.addAttribute("taskId", id);

@@ -1,13 +1,24 @@
 package com.example.projectcalculator.model;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.util.List;
 
 public class Project {
 
     private Long id;
+    
+    @NotBlank(message = "Name is required")
+    @Size(max = 50, message = "Name cannot contain more than 50 characters")
     private String name;
+    
+    @Size(max = 200, message = "Description cannot contain more than 200 characters")
     private String description;
+    
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate deadline;
 
     // placeholder for at omgå thymeleaf errors til
