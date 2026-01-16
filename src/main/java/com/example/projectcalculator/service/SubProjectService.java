@@ -15,9 +15,7 @@ public class SubProjectService {
         this.subprojectRepository = subprojectRepository;
     }
 
-    /**
-     * Service method used by controller.
-     */
+
     public List<SubProject> getAllSubProjects() {
         return subprojectRepository.findAllSubProjects();
     }
