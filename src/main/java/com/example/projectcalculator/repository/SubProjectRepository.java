@@ -19,58 +19,75 @@ public class SubProjectRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    /**
-     * Henter alle Subprojekter fra subproject-tabellen.
-     */
-    public List<SubProject> findAllSubProjects() {
+    public List<SubProject> listAllSubProjects() {
         String sql = """
-                SELECT id, name, description, deadline, project_id
+                SELECT id, project_id, name, description, deadline
                 FROM subproject
                 ORDER BY id
                 """;
-
         return jdbcTemplate.query(sql, new SubProjectRowMapper());
     }
 
-    /**
-     * Opretter et nyt SubProject til et givet projekt.
-     */
-    public boolean createSubProject(SubProject subProject, long projectId) {
-        String sql = "INSERT INTO subproject (name, description, deadline, project_id) VALUES (?, ?, ?, ?)";
+    public SubProject findSubProjectById(long id) {
+        String sql = """
+                SELECT id, project_id, name, description, deadline
+                FROM subproject
+                WHERE id = ?
+                """;
+        List<SubProject> results = jdbcTemplate.query(sql, new SubProjectRowMapper(), id);
+        return results.isEmpty() ? null : results.get(0);
+    }
+
+    public boolean createSubProject(SubProject subproject) {
+        String sql = "INSERT INTO subproject (project_id, id, name, description, deadline) VALUES (?, ?, ?, ?)";
         int rows = jdbcTemplate.update(
                 sql,
-                subProject.getName(),
-                subProject.getDescription(),
-                subProject.getDeadline(),
-                projectId
+
+                subproject.getProjectId(),
+                subproject.getId(),
+                subproject.getName(),
+                subproject.getDescription(),
+                subproject.getDeadline()
         );
         return rows > 0;
     }
 
-    /**
-     * Sletter et SubProject efter id.
-     */
-    public boolean delete(long id) {
+    public boolean updateSubProject(SubProject subproject) {
+        String sql = """
+                UPDATE subproject
+                SET project_id = ?, id = ?, name = ?, description = ?, deadline = ?
+                WHERE id = ?
+                """;
+        int rows = jdbcTemplate.update(
+                sql,
+                subproject.getProjectId(),
+                subproject.getName(),
+                subproject.getDescription(),
+                subproject.getDeadline(),
+                subproject.getId()
+        );
+        return rows > 0;
+    }
+
+    public boolean deleteSubProject(long id) {
         String sql = "DELETE FROM subproject WHERE id = ?";
         int rows = jdbcTemplate.update(sql, id);
         return rows > 0;
     }
 
-    /**
-     * Mapper én række fra subproject-tabellen til et SubProject-objekt.
-     * Tasks sættes til null her; kan indlæses separat hvis nødvendigt.
-     */
     private static class SubProjectRowMapper implements RowMapper<SubProject> {
         @Override
         public SubProject mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Long id = rs.getLong("id");
-            String name = rs.getString("name");
-            String description = rs.getString("description");
+            SubProject sp = new SubProject();
+            sp.setId(rs.getLong("id"));
+            sp.setProjectId(rs.getLong("project_id"));
+            sp.setName(rs.getString("name"));
+            sp.setDescription(rs.getString("description"));
             LocalDate deadline = rs.getDate("deadline") != null
                     ? rs.getDate("deadline").toLocalDate()
                     : null;
-
-            return new SubProject(id, name, description, deadline, null);
+            sp.setDeadline(deadline);
+            return sp;
         }
     }
 }

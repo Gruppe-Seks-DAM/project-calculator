@@ -5,6 +5,7 @@ import java.util.List;
 
 public class SubProject {
 
+    private Long projectId;
     private Long id;
     private String name;
     private String description;
@@ -13,11 +14,19 @@ public class SubProject {
     public SubProject() {
     }
 
-    public SubProject(Long id, String name, String description, LocalDate deadline, List<Task> tasks) {
+    public SubProject(Long projectId, Long id, String name, String description, LocalDate deadline, List<Task> tasks) {
+        this.projectId = projectId;
         this.id = id;
         this.name = name;
         this.description = description;
         this.deadline = deadline;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 
     public Long getId() {
