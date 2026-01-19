@@ -20,7 +20,7 @@ public class SubProjectController {
 
     ///  LISTS ALL SUBPROJECTS FOR A SPECIFIC PROJECT AND ADDS THEM TO THE MODEL
     @GetMapping
-    public String showSubprojects(@PathVariable long projectId, Model model) {
+    public String showSubprojects(@PathVariable long projectId,Model model) {
         model.addAttribute("projectId", projectId);
         model.addAttribute("subprojects", service.getAllSubProjects(projectId));
         return "subprojects";

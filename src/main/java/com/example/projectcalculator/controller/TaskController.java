@@ -2,161 +2,117 @@ package com.example.projectcalculator.controller;
 
 import com.example.projectcalculator.model.Task;
 import com.example.projectcalculator.service.TaskService;
-import jakarta.validation.Valid;
-import com.example.projectcalculator.model.Task;
-import com.example.projectcalculator.service.TaskService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-
 @Controller
-@RequestMapping("/tasks")
+@RequestMapping("/projects/{projectId}/subprojects/{subProjectId}/tasks")
 public class TaskController {
 
     private final TaskService service;
 
-    TaskController(TaskService service){
+    public TaskController(TaskService service) {
         this.service = service;
     }
 
-    /**
-     * #189 - POST /tasks/[id]/delete
-     * Handle task deletion
-     */
-    @PostMapping("/{id}/delete")
-    public String deleteTask(@PathVariable Long id, Model model) {
-        try {
-            // Get subproject ID for redirect
-            Optional<Long> subProjectIdOpt = service.getSubProjectIdForTask(id);
+    @GetMapping
+    public String showTasks(@PathVariable long projectId,
+                            @PathVariable long subProjectId,
+                            Model model) {
 
-            // Delete the task
-            boolean deleted = service.deleteTask(id);
-
-            if (deleted) {
-                // Redirect back to subproject tasks page
-                if (subProjectIdOpt.isPresent()) {
-                    return "redirect:/subprojects/" + subProjectIdOpt.get();
-                } else {
-                    return "redirect:/projects";
-                }
-            } else {
-                model.addAttribute("error", "Task not found or could not be deleted");
-                // Try to redirect anyway, or show error page
-                return "redirect:/projects";
-            }
-        } catch (Exception e) {
-            model.addAttribute("error", "Error deleting task: " + e.getMessage());
-            return "redirect:/projects";
-        }
+        model.addAttribute("projectId", projectId);
+        model.addAttribute("subProjectId", subProjectId);
+        model.addAttribute("tasks", service.getAllTasks(subProjectId));
+        return "tasks";
     }
 
-    // Alternative: Delete with confirmation (GET request for confirmation page)
-    @GetMapping("/{id}/delete")
-    public String confirmDelete(@PathVariable Long id, Model model) {
-        Optional<Task> taskOpt = service.getTaskById(id);
+    @GetMapping("/create")
+    public String showCreateTaskForm(@PathVariable long projectId,
+                                     @PathVariable long subProjectId,
+                                     Model model) {
 
-        if (taskOpt.isEmpty()) {
-            return "redirect:/projects";
+        Task task = new Task();
+        task.setSubProjectId(subProjectId);
+
+        model.addAttribute("projectId", projectId);
+        model.addAttribute("subProjectId", subProjectId);
+        model.addAttribute("task", task);
+
+        return "createTaskForm";
+    }
+
+    @PostMapping("/create")
+    public String createTask(@PathVariable long projectId,
+                             @PathVariable long subProjectId,
+                             @ModelAttribute("task") Task task) {
+
+        task.setSubProjectId(subProjectId);
+
+        boolean created = service.createTask(task);
+
+        if (!created) {
+            return "redirect:/projects/" + projectId + "/subprojects/" + subProjectId +
+                    "/tasks?error=Could not create task";
         }
 
-        model.addAttribute("task", taskOpt.get());
-        return "tasks/confirm-delete";
+        return "redirect:/projects/" + projectId + "/subprojects/" + subProjectId +
+                "/tasks?success=Task created successfully";
     }
 
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        Optional<Task> opt = service.findById(id);
-        if (opt.isEmpty()) return "redirect:/tasks?error=Task not found";
+    public String showUpdateForm(@PathVariable long projectId,
+                                 @PathVariable long subProjectId,
+                                 @PathVariable long id,
+                                 Model model) {
 
-        Task t = opt.get();
-        TaskDto dto = new TaskDto();
-        dto.setName(t.getName());
-        dto.setDescription(t.getDescription());
-        dto.setDeadline(t.getDeadline());
+        Task task = service.getTaskById(subProjectId, id);
 
-        model.addAttribute("taskDto", dto);
-        model.addAttribute("taskId", id);
-        return "tasks/edit";
-    }
-
-    @PostMapping("/{id}")
-    public String updateTask(
-            @PathVariable Long id,
-            @Valid @ModelAttribute("taskDto") TaskDto dto,
-            BindingResult br,
-            Model model
-    ) {
-        if (br.hasErrors()) {
-            model.addAttribute("taskId", id);
-            return "tasks/edit";
+        if (task == null) {
+            return "redirect:/projects/" + projectId + "/subprojects/" + subProjectId +
+                    "/tasks?error=Task not found";
         }
 
-        Task t = new Task();
-        t.setId(id);
-        t.setName(dto.getName());
-        t.setDescription(dto.getDescription());
-        t.setDeadline(dto.getDeadline());
-
-        boolean updated = service.updateTask(t);
-        if (!updated) {
-            model.addAttribute("error", "Failed to update task");
-            model.addAttribute("taskId", id);
-            return "tasks/edit";
-        }
-        return "redirect:/tasks?success=Task updated";
-    }
-    /**
-     * Show form to create a new task
-     */
-    @GetMapping("/{subProjectId}/tasks/create")
-    public String showCreateForm(@PathVariable Long subProjectId, Model model) {
-        Task task = new Task();
-        task.setSubProjectId(subProjectId);
-        model.addAttribute("task", task);
-        return "tasks/create";
-    }
-
-    /**
-     * #182 - POST /subprojects/{id}/tasks
-     * Handle form submission for creating a task
-     */
-    @PostMapping("/{subProjectId}/tasks")
-    public String createTask(
-            @PathVariable Long subProjectId,
-            @Valid @ModelAttribute("task") Task task,
-            BindingResult bindingResult,
-            Model model) {
-
-        // Ensure the task is linked to the correct subproject
-        task.setSubProjectId(subProjectId);
-
-        if (bindingResult.hasErrors()) {
-            return "tasks/create";
-        }
-
-        try {
-            service.createTask(task);
-            return "redirect:/subprojects/" + subProjectId;
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            return "tasks/create";
-        }
-    }
-
-    /**
-     * View tasks for a subproject
-     */
-    @GetMapping("/{subProjectId}")
-    public String viewSubProjectTasks(@PathVariable Long subProjectId, Model model) {
-        List<Task> tasks = service.getTasksBySubProjectId(subProjectId);
-        model.addAttribute("tasks", tasks);
+        model.addAttribute("projectId", projectId);
         model.addAttribute("subProjectId", subProjectId);
-        return "tasks/list";
+        model.addAttribute("task", task);
+
+        return "editTaskForm";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String updateTask(@PathVariable long projectId,
+                             @PathVariable long subProjectId,
+                             @PathVariable long id,
+                             @ModelAttribute("task") Task task) {
+
+        task.setId(id);
+        task.setSubProjectId(subProjectId);
+
+        boolean updated = service.updateTask(task);
+
+        if (!updated) {
+            return "redirect:/projects/" + projectId + "/subprojects/" + subProjectId +
+                    "/tasks?error=Could not update task";
+        }
+
+        return "redirect:/projects/" + projectId + "/subprojects/" + subProjectId +
+                "/tasks?success=Task updated successfully";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteTask(@PathVariable long projectId,
+                             @PathVariable long subProjectId,
+                             @PathVariable long id) {
+
+        boolean deleted = service.deleteTask(subProjectId, id);
+
+        if (!deleted) {
+            return "redirect:/projects/" + projectId + "/subprojects/" + subProjectId +
+                    "/tasks?error=Could not delete task";
+        }
+
+        return "redirect:/projects/" + projectId + "/subprojects/" + subProjectId +
+                "/tasks?success=Task deleted successfully";
     }
 }
