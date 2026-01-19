@@ -42,7 +42,7 @@ public class ProjectRepository {
 
     ///  CREATE A NEW PROJECT
     public boolean createProject(Project project) {
-        String sql = "INSERT INTO proje t (name, description, deadline) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO project (name, description, deadline) VALUES (?, ?, ?)";
         int rows = jdbcTemplate.update(
                 sql,
                 project.getName(),

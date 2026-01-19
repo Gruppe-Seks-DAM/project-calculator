@@ -1,7 +1,6 @@
 package com.example.projectcalculator.model;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class SubProject {
 
@@ -14,7 +13,7 @@ public class SubProject {
     public SubProject() {
     }
 
-    public SubProject(Long projectId, Long id, String name, String description, LocalDate deadline, List<Task> tasks) {
+    public SubProject(Long projectId, Long id, String name, String description, LocalDate deadline) {
         this.projectId = projectId;
         this.id = id;
         this.name = name;

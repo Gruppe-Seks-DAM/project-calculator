@@ -16,11 +16,11 @@ public class SubProjectService {
     }
 
     public List<SubProject> getAllSubProjects(long projectId) {
-        return subprojectRepository.listAllSubProjects();
+        return subprojectRepository.listAllSubProjectsByProjectId(projectId);
     }
 
-    public SubProject getSubProjectById(long id) {
-        return subprojectRepository.findSubProjectById(id);
+    public SubProject getSubProjectById(long projectId, long id) {
+        return subprojectRepository.findSubProjectById(projectId, id);
     }
 
     public boolean createSubProject(SubProject subproject) {
@@ -31,7 +31,7 @@ public class SubProjectService {
         return subprojectRepository.updateSubProject(subproject);
     }
 
-    public boolean deleteSubProject(long id) {
-        return subprojectRepository.deleteSubProject(id);
+    public boolean deleteSubProject(long projectId, long id) {
+        return subprojectRepository.deleteSubProject(projectId, id);
     }
 }

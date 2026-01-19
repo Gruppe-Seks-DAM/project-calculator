@@ -1,6 +1,5 @@
 package com.example.projectcalculator.controller;
 
-import com.example.projectcalculator.dto.TaskDto;
 import com.example.projectcalculator.model.Task;
 import com.example.projectcalculator.service.TaskService;
 import jakarta.validation.Valid;

@@ -60,7 +60,7 @@ public class SubProjectController {
                                  @PathVariable long id,
                                  Model model) {
 
-        SubProject subproject = service.getSubProjectById(id);
+        SubProject subproject = service.getSubProjectById(projectId, id);
 
         if (subproject == null) {
             return "redirect:/projects/" + projectId + "/subprojects?error=Subproject not found";
@@ -95,7 +95,7 @@ public class SubProjectController {
     public String deleteSubproject(@PathVariable long projectId,
                                    @PathVariable long id) {
 
-        boolean deleted = service.deleteSubProject(id);
+        boolean deleted = service.deleteSubProject(projectId, id);
 
         if (!deleted) {
             return "redirect:/projects/" + projectId + "/subprojects?error=Could not delete subproject";
