@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Create subproject</title>
+</head>
+<body>
+
+<h1>Create subproject</h1>
+
+<form th:action="@{|/projects/${projectId}/subprojects/create|}"
+      method="post"
+      th:object="${subproject}">
+
+  <div>
+    <label for="name">Name</label>
+    <input id="name" type="text" th:field="*{name}" required>
+  </div>
+
+  <div>
+    <label for="description">Description</label>
+    <textarea id="description" th:field="*{description}"></textarea>
+  </div>
+
+  <div>
+    <label for="deadline">Deadline</label>
+    <input id="deadline" type="date" th:field="*{deadline}">
+  </div>
+
+  <button type="submit">Create</button>
+</form>
+
+<p>
+  <a th:href="@{|/projects/${projectId}/subprojects|}">Back</a>
+</p>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Subtasks</title>
+</head>
+<body>
+
+<h1>Subtasks</h1>
+
+<div th:if="${param.success}">
+    <p th:text="${param.success}">Success</p>
+</div>
+
+<div th:if="${param.error}">
+    <p th:text="${param.error}">Error</p>
+</div>
+
+<p>
+    <a th:href="@{|/projects/${projectId}/subprojects/${subProjectId}/tasks|}">Back to tasks</a>
+</p>
+
+<p>
+    <a th:href="@{|/projects/${projectId}/subprojects/${subProjectId}/tasks/${taskId}/subtasks/create|}">Create subtask</a>
+</p>
+
+<div th:if="${#lists.isEmpty(subtasks)}">
+    <p>No subtasks yet.</p>
+</div>
+
+<table th:if="${!#lists.isEmpty(subtasks)}" border="1" cellpadding="6">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Deadline</th>
+        <th>Est. hours</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="st : ${subtasks}">
+        <td th:text="${st.id}">1</td>
+        <td th:text="${st.name}">Name</td>
+        <td th:text="${st.deadline}">2026-01-01</td>
+        <td th:text="${st.estimatedHours}">1.5</td>
+        <td>
+            <a th:href="@{|/projects/${projectId}/subprojects/${subProjectId}/tasks/${taskId}/subtasks/${st.id}/edit|}">Edit</a>
+            |
+            <form th:action="@{|/projects/${projectId}/subprojects/${subProjectId}/tasks/${taskId}/subtasks/${st.id}/delete|}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

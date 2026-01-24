@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Projects</title>
+</head>
+<body>
+
+<h1>Projects</h1>
+
+<div th:if="${param.success}">
+    <p th:text="${param.success}">Success</p>
+</div>
+
+<div th:if="${param.error}">
+    <p th:text="${param.error}">Error</p>
+</div>
+
+<p>
+    <a th:href="@{/projects/create}">Create project</a>
+</p>
+
+<div th:if="${#lists.isEmpty(projects)}">
+    <p>No projects yet.</p>
+</div>
+
+<table th:if="${!#lists.isEmpty(projects)}" border="1" cellpadding="6">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Deadline</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="p : ${projects}">
+        <td th:text="${p.id}">1</td>
+        <td th:text="${p.name}">Name</td>
+        <td th:text="${p.deadline}">2026-01-01</td>
+        <td>
+            <a th:href="@{|/projects/${p.id}/subprojects|}">Subprojects</a>
+            |
+            <a th:href="@{|/projects/${p.id}/edit|}">Edit</a>
+            |
+            <form th:action="@{|/projects/${p.id}/delete|}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

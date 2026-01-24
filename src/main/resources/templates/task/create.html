@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Create task</title>
+</head>
+<body>
+
+<h1>Create task</h1>
+
+<form th:action="@{|/projects/${projectId}/subprojects/${subProjectId}/tasks/create|}"
+      method="post"
+      th:object="${task}">
+
+    <div>
+        <label for="name">Name</label>
+        <input id="name" type="text" th:field="*{name}" required>
+    </div>
+
+    <div>
+        <label for="description">Description</label>
+        <textarea id="description" th:field="*{description}"></textarea>
+    </div>
+
+    <div>
+        <label for="deadline">Deadline</label>
+        <input id="deadline" type="date" th:field="*{deadline}">
+    </div>
+
+    <div>
+        <label for="estimatedHours">Estimated hours</label>
+        <input id="estimatedHours" type="number" step="0.1" min="0.1" th:field="*{estimatedHours}" required>
+    </div>
+
+    <button type="submit">Create</button>
+</form>
+
+<p>
+    <a th:href="@{|/projects/${projectId}/subprojects/${subProjectId}/tasks|}">Back</a>
+</p>
+
+</body>
+</html>

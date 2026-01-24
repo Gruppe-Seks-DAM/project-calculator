@@ -24,7 +24,7 @@ public class TaskController {
         model.addAttribute("projectId", projectId);
         model.addAttribute("subProjectId", subProjectId);
         model.addAttribute("tasks", service.getAllTasks(subProjectId));
-        return "tasks";
+        return "task/list";
     }
 
     @GetMapping("/create")
@@ -39,7 +39,7 @@ public class TaskController {
         model.addAttribute("subProjectId", subProjectId);
         model.addAttribute("task", task);
 
-        return "createTaskForm";
+        return "task/create";
     }
 
     @PostMapping("/create")
@@ -77,7 +77,7 @@ public class TaskController {
         model.addAttribute("subProjectId", subProjectId);
         model.addAttribute("task", task);
 
-        return "editTaskForm";
+        return "task/edit";
     }
 
     @PostMapping("/{id}/edit")

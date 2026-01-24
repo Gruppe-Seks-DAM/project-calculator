@@ -23,7 +23,7 @@ public class SubProjectController {
     public String showSubprojects(@PathVariable long projectId,Model model) {
         model.addAttribute("projectId", projectId);
         model.addAttribute("subprojects", service.getAllSubProjects(projectId));
-        return "subprojects";
+        return "subproject/list";
     }
 
     ///  SHOW FORM TO CREATE A NEW SUBPROJECT (FOR THIS PROJECT)
@@ -35,7 +35,7 @@ public class SubProjectController {
         model.addAttribute("projectId", projectId);
         model.addAttribute("subproject", subproject);
 
-        return "createSubprojectForm";
+        return "subproject/create";
     }
 
     ///  CREATE A NEW SUBPROJECT AND REDIRECT BACK TO THIS PROJECT'S SUBPROJECTS
@@ -69,7 +69,7 @@ public class SubProjectController {
         model.addAttribute("projectId", projectId);
         model.addAttribute("subproject", subproject);
 
-        return "editSubprojectForm";
+        return "subproject/edit";
     }
 
     /// UPDATE AN EXISTING SUBPROJECT AND REDIRECT BACK TO THIS PROJECT'S SUBPROJECTS

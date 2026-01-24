@@ -51,6 +51,7 @@ public class ProjectRepository {
         );
         return rows > 0;
     }
+
     ///  UPDATE A PROJECT BY ID
     public boolean updateProject(Project project) {
         String sql = """
@@ -73,6 +74,7 @@ public class ProjectRepository {
         int rows = jdbcTemplate.update(sql, id);
         return rows > 0;
     }
+
     /// ROWMAPPER CLASS CONVERTS DATABASE ROWS INTO PROJECT OBJECTS
     private static class ProjectRowMapper implements RowMapper<Project> {
         @Override
@@ -87,4 +89,3 @@ public class ProjectRepository {
         }
     }
 }
-

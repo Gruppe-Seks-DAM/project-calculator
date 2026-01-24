@@ -6,8 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/projects")
 public class ProjectController {
@@ -23,15 +21,14 @@ public class ProjectController {
     @GetMapping
     public String showProjects(Model model) {
         model.addAttribute("projects", service.getAllProjects());
-        return "projects";
+        return "project/list";
     }
-
 
     ///  SHOW FORM TO CREATE A NEW PROJECT
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("project", new Project());
-        return "createProjectForm";
+        return "project/create";
     }
 
     ///  CREATE A NEW PROJECT AND REDIRECT TO /projects WITH SUCCESS OR ERROR MESSAGE
@@ -54,7 +51,7 @@ public class ProjectController {
         }
 
         model.addAttribute("project", project);
-        return "editProjectForm";
+        return "project/edit";
     }
 
     /// UPDATE AN EXISTING PROJECT AND REDIRECT WITH SUCCESS OR ERROR MESSAGE

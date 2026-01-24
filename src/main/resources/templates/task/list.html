@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Tasks</title>
+</head>
+<body>
+
+<h1>Tasks</h1>
+
+<div th:if="${param.success}">
+    <p th:text="${param.success}">Success</p>
+</div>
+
+<div th:if="${param.error}">
+    <p th:text="${param.error}">Error</p>
+</div>
+
+<p>
+    <a th:href="@{|/projects/${projectId}/subprojects|}">Back to subprojects</a>
+</p>
+
+<p>
+    <a th:href="@{|/projects/${projectId}/subprojects/${subProjectId}/tasks/create|}">Create task</a>
+</p>
+
+<div th:if="${#lists.isEmpty(tasks)}">
+    <p>No tasks yet.</p>
+</div>
+
+<table th:if="${!#lists.isEmpty(tasks)}" border="1" cellpadding="6">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Deadline</th>
+        <th>Est. hours</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="t : ${tasks}">
+        <td th:text="${t.id}">1</td>
+        <td th:text="${t.name}">Name</td>
+        <td th:text="${t.deadline}">2026-01-01</td>
+        <td th:text="${t.estimatedHours}">1.5</td>
+        <td>
+            <a th:href="@{|/projects/${projectId}/subprojects/${subProjectId}/tasks/${t.id}/subtasks|}">Subtasks</a>
+            |
+            <a th:href="@{|/projects/${projectId}/subprojects/${subProjectId}/tasks/${t.id}/edit|}">Edit</a>
+            |
+            <form th:action="@{|/projects/${projectId}/subprojects/${subProjectId}/tasks/${t.id}/delete|}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
