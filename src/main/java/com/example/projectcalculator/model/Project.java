@@ -1,6 +1,7 @@
 package com.example.projectcalculator.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Project {
 
@@ -8,6 +9,8 @@ public class Project {
     private String name;
     private String description;
     private LocalDate deadline;
+
+    private List<SubProject> subProjects;
 
     public Project() {
     }
@@ -49,5 +52,26 @@ public class Project {
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
+    }
+
+    public List<SubProject> getSubProjects() {
+        return subProjects;
+    }
+
+    public void setSubProjects(List<SubProject> subProjects) {
+        this.subProjects = subProjects;
+    }
+
+    public double getEstimatedHours() {
+        if (subProjects == null || subProjects.isEmpty()) {
+            return 0.0;
+        }
+
+        double total = 0.0;
+        for (SubProject subProject : subProjects) {
+            total += subProject.getEstimatedHours();
+        }
+
+        return total;
     }
 }

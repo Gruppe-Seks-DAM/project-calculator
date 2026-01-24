@@ -9,6 +9,7 @@ public class SubTask {
     private String name;
     private String description;
     private LocalDate deadline;
+
     private Double estimatedHours;
 
     public SubTask() {
@@ -63,11 +64,14 @@ public class SubTask {
         this.deadline = deadline;
     }
 
-    public Double getEstimatedHours() {
-        return estimatedHours;
-    }
-
     public void setEstimatedHours(Double estimatedHours) {
         this.estimatedHours = estimatedHours;
+    }
+
+    public Double getEstimatedHours() {
+        if (estimatedHours == null || estimatedHours <= 0) {
+            return 0.0;
+        }
+        return estimatedHours;
     }
 }

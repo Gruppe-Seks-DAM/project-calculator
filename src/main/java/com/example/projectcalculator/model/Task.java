@@ -1,6 +1,7 @@
 package com.example.projectcalculator.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Task {
 
@@ -9,13 +10,15 @@ public class Task {
     private String name;
     private String description;
     private LocalDate deadline;
+
     private Double estimatedHours;
 
+    private List<SubTask> subTasks;
 
-    public Task() {}
+    public Task() {
+    }
 
-
-    public Task(Long subProjectId,Long id, String name, String description, LocalDate deadline, Double estimatedHours) {
+    public Task(Long subProjectId, Long id, String name, String description, LocalDate deadline, Double estimatedHours) {
         this.subProjectId = subProjectId;
         this.id = id;
         this.name = name;
@@ -56,7 +59,6 @@ public class Task {
         this.description = description;
     }
 
-
     public LocalDate getDeadline() {
         return deadline;
     }
@@ -65,11 +67,36 @@ public class Task {
         this.deadline = deadline;
     }
 
-    public Double getEstimatedHours() {
+    public Double getStoredEstimatedHours() {
         return estimatedHours;
     }
 
     public void setEstimatedHours(Double estimatedHours) {
         this.estimatedHours = estimatedHours;
+    }
+
+    public List<SubTask> getSubTasks() {
+        return subTasks;
+    }
+
+    public void setSubTasks(List<SubTask> subTasks) {
+        this.subTasks = subTasks;
+    }
+
+    // if subtasks exist, sum their estimated hours; otherwise return task stored estimated hours
+    public double getEstimatedHours() {
+        if (subTasks == null || subTasks.isEmpty()) {
+            if (estimatedHours == null || estimatedHours <= 0) {
+                return 0.0;
+            }
+            return estimatedHours;
+        }
+
+        double total = 0.0;
+        for (SubTask subTask : subTasks) {
+            total += subTask.getEstimatedHours();
+        }
+
+        return total;
     }
 }
